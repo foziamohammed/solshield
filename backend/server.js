@@ -6,6 +6,7 @@ import { getOnChainData } from './services/solana.js';
 import { checkBlacklists } from './services/blacklist.js';
 import { getFlaggedAddresses, addFlaggedAddress } from './services/program.js';
 import { generateSpeech } from './services/tts.js';
+import { analyzeDomain, isUrlOrDomain } from './services/domain.js';
 
 dotenv.config();
 
@@ -31,19 +32,16 @@ app.post('/api/analyze', async (req, res) => {
 
     const trimmed = address.trim();
 
-    // Run all checks in parallel
-    const [onChainData, blacklistResult, programFlags] = await Promise.allSettled([
+    // Perform all checks in parallel
+    const [onChainData, blacklistResult, onChainFlags, domainResult] = await Promise.all([
       getOnChainData(trimmed),
       checkBlacklists(trimmed),
       getFlaggedAddresses(trimmed),
+      isUrlOrDomain(trimmed) ? analyzeDomain(trimmed) : Promise.resolve(null)
     ]);
 
-    const onChain = onChainData.status === 'fulfilled' ? onChainData.value : null;
-    const blacklist = blacklistResult.status === 'fulfilled' ? blacklistResult.value : { flagged: false, sources: [] };
-    const onChainFlags = programFlags.status === 'fulfilled' ? programFlags.value : { flagged: false };
-
     // Build the risk report
-    const report = analyzeAddress(trimmed, onChain, blacklist, onChainFlags);
+    const report = analyzeAddress(trimmed, onChainData, blacklistResult, onChainFlags, domainResult);
 
     res.json(report);
   } catch (error) {

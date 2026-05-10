@@ -5,13 +5,38 @@
 /**
  * Generate a comprehensive risk report from all gathered data
  */
-export function analyzeAddress(address, onChainData, blacklistResult, onChainFlags) {
+export function analyzeAddress(address, onChainData, blacklistResult, onChainFlags, domainResult) {
   const factors = [];
   let riskScore = 0;
   let maxRisk = 0;
 
+  // === Domain/URL Analysis ===
+  if (domainResult) {
+    if (domainResult.score > 0) {
+      riskScore += domainResult.score;
+      maxRisk = Math.max(maxRisk, domainResult.score);
+      factors.push({
+        category: 'Domain Safety',
+        label: 'Phishing Detection',
+        risk: domainResult.score >= 40 ? 'critical' : (domainResult.score >= 20 ? 'high' : 'medium'),
+        score: domainResult.score,
+        detail: domainResult.reasons.join('. '),
+        icon: '🔗',
+      });
+    } else {
+      factors.push({
+        category: 'Domain Safety',
+        label: 'Phishing Detection',
+        risk: 'safe',
+        score: 0,
+        detail: 'URL appears to be from a verified or non-suspicious domain',
+        icon: '✅',
+      });
+    }
+  }
+
   // === Blacklist Checks (highest weight) ===
-  if (blacklistResult.flagged) {
+  if (blacklistResult?.flagged) {
     const weight = blacklistResult.riskLevel === 'critical' ? 40 : 25;
     riskScore += weight;
     maxRisk = Math.max(maxRisk, weight);
@@ -23,7 +48,7 @@ export function analyzeAddress(address, onChainData, blacklistResult, onChainFla
       detail: `Address found in ${blacklistResult.sources.length} blacklist source(s): ${blacklistResult.sources.join(', ')}`,
       icon: '🚫',
     });
-  } else {
+  } else if (!domainResult) { // Only show address blacklist if it's not a domain
     factors.push({
       category: 'Blacklist',
       label: 'Known Scam Database',
@@ -46,7 +71,7 @@ export function analyzeAddress(address, onChainData, blacklistResult, onChainFla
       detail: 'This address has been flagged by the SolShield community on-chain',
       icon: '⛓️',
     });
-  } else {
+  } else if (!domainResult) {
     factors.push({
       category: 'On-Chain Flags',
       label: 'Community Reports',
@@ -180,19 +205,8 @@ export function analyzeAddress(address, onChainData, blacklistResult, onChainFla
         icon: '🪙',
       });
     }
-
-    // === Suspicious Permissions (Program accounts) ===
-    if (onChainData.isProgram) {
-      factors.push({
-        category: 'Permissions',
-        label: 'Program Account',
-        risk: 'info',
-        score: 0,
-        detail: 'This is an executable program account — verify its source code',
-        icon: '🔧',
-      });
-    }
-  } else if (onChainData && !onChainData.valid) {
+  } else if (onChainData && !onChainData.valid && !domainResult) {
+    // Only flag as "Invalid Solana Address" if it's NOT a domain/URL
     riskScore += 5;
     factors.push({
       category: 'Validity',
@@ -235,7 +249,7 @@ export function analyzeAddress(address, onChainData, blacklistResult, onChainFla
           newestTransaction: onChainData.newestTransaction,
         }
       : null,
-    blacklistSources: blacklistResult.details,
+    blacklistSources: blacklistResult?.details || [],
     timestamp: new Date().toISOString(),
     showSafeRoute: riskLevel === 'critical' || riskLevel === 'high',
   };

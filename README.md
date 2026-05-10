@@ -59,6 +59,7 @@ Classification:
 |---------|--------|-------------|
 | 🔍 Instant Risk Analysis | ✅ Implemented | Paste any Solana address and get a weighted risk score with detailed breakdown |
 | 📊 Multi-Source Checks | ✅ Implemented | Queries Solana FM, GoPlus Security, community blacklists, and on-chain data |
+| 🌐 Phishing URL Shield | ✅ Implemented | Deep analysis of URLs/domains for brand impersonation and scam patterns |
 | 🔊 Voice Verdict | ✅ Implemented | Premium ElevenLabs AI proxied via backend (with browser TTS fallback) |
 | 🛡️ Safe Route | ✅ Implemented | LI.FI widget shows safe bridge/swap alternatives for flagged addresses |
 | ⛓️ On-Chain Registry | ✅ Implemented | Anchor program stores flagged addresses on Solana devnet via PDAs |
@@ -92,6 +93,12 @@ npm run dev
 |---------|-----|
 | Frontend | http://localhost:5173 |
 | Backend API | http://localhost:3001 |
+
+| Input | Verdict |
+|---------|--------|
+| `vines1vzrYbzLMRdu58ou5XTby4qAqVRLmqo36NKPTg` | 🟢 Safe — known validator wallet |
+| `https://uniswap-airdrop-claim.net` | 🔴 Critical — Phishing URL detected |
+| `EPjFWdd5AufqSSqeM2qN1xzybapC8G4wEGGkZwyTDt1v` | 🟢 Safe — USDC token mint |
 
 ---
 
