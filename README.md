@@ -139,17 +139,6 @@ The verdict is generated as a human-readable string by the `generateVerdict()` f
 - **Browser SpeechSynthesis API** (default, free, no setup required) — uses the Web Speech API built into all modern browsers
 - **ElevenLabs API** (optional upgrade) — calls the ElevenLabs REST API to convert text to premium AI-generated speech audio. This is an **API endpoint call**, not a trained model — you send text and receive audio bytes back.
 
-### Summary Table
-
-| Component | Approach | Is AI? | Is Trained? |
-|---|---|---|---|
-| Risk Scoring | Rule-based weighted heuristics | ❌ No | ❌ No |
-| Blacklist Check | Static list + API queries (Solana FM, GoPlus) | ❌ No | ❌ No |
-| Transaction Patterns | Algorithmic pattern matching (burst, error rate) | ❌ No | ❌ No |
-| On-Chain Flags | PDA lookup on Solana devnet | ❌ No | ❌ No |
-| Voice Verdict | Browser TTS / ElevenLabs API (text → speech) | ✅ Uses AI (API) | ❌ Not by us |
-| Safe Route | LI.FI widget (iframe embed) | ❌ No | ❌ No |
-
 ---
 
 ## 📋 Risk Score Breakdown
