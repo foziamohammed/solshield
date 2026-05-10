@@ -353,15 +353,52 @@ function speakWithBrowserTTS(text) {
 // ===== LI.FI Widget =====
 function loadLiFiWidget() {
   const container = document.getElementById('lifi-widget');
-  // Load LI.FI widget via iframe for a clean integration
+  
+  // Use the native SDK to avoid CSP iframe issues
+  if (window.LiFiWidget) {
+    try {
+      const widgetConfig = {
+        containerId: 'lifi-widget',
+        integrator: 'solshield',
+        fromChain: 115111108116900, // Solana
+        toChain: 115111108116900,   // Solana
+        appearance: 'dark',
+        variant: 'compact',
+        theme: {
+          palette: {
+            primary: { main: '#6c5ce7' },
+            secondary: { main: '#00d4ff' },
+          },
+          shape: { borderRadius: 12 },
+          container: {
+            boxShadow: 'none',
+            border: '1px solid rgba(255, 255, 255, 0.08)',
+          },
+        },
+      };
+
+      // Check if widget is already initialized
+      if (container.children.length === 0) {
+        new window.LiFiWidget(widgetConfig);
+      }
+    } catch (error) {
+      console.error('LI.FI Widget init error:', error);
+      showFallbackLink();
+    }
+  } else {
+    showFallbackLink();
+  }
+}
+
+function showFallbackLink() {
+  const container = document.getElementById('lifi-widget');
   container.innerHTML = `
-    <iframe 
-      src="https://transferto.xyz/swap?fromChain=sol&toChain=sol" 
-      style="width:100%;height:500px;border:none;border-radius:10px;"
-      title="LI.FI Safe Route Widget"
-      allow="clipboard-write"
-      loading="lazy"
-    ></iframe>
+    <div style="padding: 40px; text-align: center; background: rgba(255,255,255,0.03); border-radius: 12px; border: 1px dashed var(--border);">
+      <p style="margin-bottom: 16px; color: var(--text-secondary);">Safe Route widget unavailable.</p>
+      <a href="https://jumper.exchange" target="_blank" class="action-btn" style="text-decoration: none; justify-content: center;">
+        Go to Jumper Exchange
+      </a>
+    </div>
   `;
 }
 
