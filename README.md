@@ -220,7 +220,7 @@ The verdict is generated as a human-readable string by the `generateVerdict()` f
 
 ```bash
 # Clone the repo
-git clone https://github.com/your-username/solshield.git
+git clone https://github.com/foziamohammed/solshield.git
 cd solshield
 
 # Install all dependencies (root + backend + frontend)
