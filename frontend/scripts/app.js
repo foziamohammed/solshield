@@ -22,15 +22,18 @@ const safeRouteSection = document.getElementById('safe-route-section');
 const voiceBtn = document.getElementById('voice-btn');
 const reportBtn = document.getElementById('report-btn');
 const verdictAudio = document.getElementById('verdict-audio');
+const connectBtn = document.getElementById('connect-btn');
 
 let currentReport = null;
 let isPlaying = false;
+let userWallet = null;
 
 // ===== Event Listeners =====
 scanBtn.addEventListener('click', handleScan);
 addressInput.addEventListener('keydown', (e) => { if (e.key === 'Enter') handleScan(); });
 voiceBtn.addEventListener('click', handleVoice);
 reportBtn.addEventListener('click', handleReport);
+connectBtn.addEventListener('click', handleConnect);
 
 // Hint buttons
 document.querySelectorAll('.hint-btn').forEach((btn) => {
@@ -222,16 +225,50 @@ async function handleVoice() {
   voiceBtn.querySelector('span').textContent = 'Loading...';
 
   try {
-    // Use browser SpeechSynthesis as fallback (always available, no API key needed)
-    // For production, replace with ElevenLabs API call below
-    await speakWithBrowserTTS(currentReport.verdict);
+    // Call our backend proxy for premium ElevenLabs voice
+    await speakWithElevenLabsProxy(currentReport.verdict);
   } catch (error) {
     console.error('Voice error:', error);
-    // Final fallback
-    showToast('Voice playback unavailable', 'error');
+    // Fallback to browser TTS
+    try {
+      await speakWithBrowserTTS(currentReport.verdict);
+    } catch (fallbackError) {
+      showToast('Voice playback unavailable', 'error');
+      voiceBtn.classList.remove('playing');
+      voiceBtn.querySelector('span').textContent = 'Play Verdict';
+    }
+  }
+}
+
+/**
+ * Call backend proxy for ElevenLabs TTS
+ */
+async function speakWithElevenLabsProxy(text) {
+  const response = await fetch(`${API_BASE}/tts`, {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ text }),
+  });
+
+  if (!response.ok) {
+    const err = await response.json().catch(() => ({}));
+    throw new Error(err.error || 'TTS Proxy error');
+  }
+
+  const blob = await response.blob();
+  const url = URL.createObjectURL(blob);
+  
+  verdictAudio.src = url;
+  verdictAudio.play();
+  isPlaying = true;
+  voiceBtn.querySelector('span').textContent = 'Stop';
+
+  verdictAudio.onended = () => {
+    isPlaying = false;
     voiceBtn.classList.remove('playing');
     voiceBtn.querySelector('span').textContent = 'Play Verdict';
-  }
+    URL.revokeObjectURL(url);
+  };
 }
 
 /**
@@ -348,6 +385,40 @@ async function handleReport() {
     }
   } catch (error) {
     showToast('Error reporting address', 'error');
+  }
+}
+
+// ===== Wallet Connect =====
+async function handleConnect() {
+  if (userWallet) {
+    // Disconnect
+    userWallet = null;
+    connectBtn.classList.remove('connected');
+    connectBtn.querySelector('.connect-btn-text').textContent = 'Connect Wallet';
+    showToast('Wallet disconnected');
+    return;
+  }
+
+  const isPhantomInstalled = window.solana && window.solana.isPhantom;
+
+  if (!isPhantomInstalled) {
+    window.open('https://phantom.app/', '_blank');
+    showToast('Please install Phantom wallet', 'info');
+    return;
+  }
+
+  try {
+    const resp = await window.solana.connect();
+    userWallet = resp.publicKey.toString();
+    
+    connectBtn.classList.add('connected');
+    const shortAddr = `${userWallet.slice(0, 4)}...${userWallet.slice(-4)}`;
+    connectBtn.querySelector('.connect-btn-text').textContent = shortAddr;
+    
+    showToast('Wallet connected successfully!', 'success');
+  } catch (err) {
+    console.error('Connection error:', err);
+    showToast('Failed to connect wallet', 'error');
   }
 }
 

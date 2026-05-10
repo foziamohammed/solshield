@@ -5,6 +5,7 @@ import { analyzeAddress } from './services/analyzer.js';
 import { getOnChainData } from './services/solana.js';
 import { checkBlacklists } from './services/blacklist.js';
 import { getFlaggedAddresses, addFlaggedAddress } from './services/program.js';
+import { generateSpeech } from './services/tts.js';
 
 dotenv.config();
 
@@ -74,6 +75,28 @@ app.post('/api/report', async (req, res) => {
   } catch (error) {
     console.error('Report error:', error);
     res.status(500).json({ error: 'Failed to report address' });
+  }
+});
+
+// Text-to-speech endpoint (proxied to ElevenLabs)
+app.post('/api/tts', async (req, res) => {
+  try {
+    const { text } = req.body;
+    if (!text) {
+      return res.status(400).json({ error: 'Text is required' });
+    }
+
+    const audioBuffer = await generateSpeech(text);
+    
+    res.set({
+      'Content-Type': 'audio/mpeg',
+      'Content-Length': audioBuffer.byteLength,
+    });
+    
+    res.send(Buffer.from(audioBuffer));
+  } catch (error) {
+    console.error('TTS error:', error);
+    res.status(500).json({ error: error.message || 'Failed to generate speech' });
   }
 });
 

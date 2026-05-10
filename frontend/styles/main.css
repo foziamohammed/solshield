@@ -91,6 +91,26 @@ body {
 .nav-link:hover, .nav-link.active { color: var(--text-primary); background: rgba(255,255,255,0.05); }
 .nav-link-github { display: flex; align-items: center; gap: 6px; }
 
+.connect-btn {
+  display: flex; align-items: center; gap: 8px;
+  padding: 8px 16px; margin-left: 8px;
+  background: rgba(108, 92, 231, 0.1);
+  border: 1px solid rgba(108, 92, 231, 0.3);
+  color: var(--text-primary); border-radius: var(--radius-sm);
+  font-size: 13px; font-weight: 600; cursor: pointer;
+  transition: var(--transition);
+}
+.connect-btn:hover {
+  background: var(--accent);
+  box-shadow: 0 0 20px var(--accent-glow);
+  border-color: var(--accent);
+}
+.connect-btn.connected {
+  background: rgba(0, 230, 118, 0.1);
+  border-color: rgba(0, 230, 118, 0.3);
+  color: var(--green);
+}
+
 /* ===== Hero ===== */
 .hero {
   padding: 140px 24px 60px; text-align: center;
