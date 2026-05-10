@@ -98,8 +98,13 @@ app.post('/api/tts', async (req, res) => {
   }
 });
 
-app.listen(PORT, () => {
-  console.log(`\n🛡️  SolShield API running on http://localhost:${PORT}`);
-  console.log(`   Health: http://localhost:${PORT}/api/health`);
-  console.log(`   Analyze: POST http://localhost:${PORT}/api/analyze\n`);
-});
+// Only start the server if we are running the file directly (not in a serverless env)
+if (process.env.NODE_ENV !== 'production' || process.argv[1].includes('server.js')) {
+  app.listen(PORT, () => {
+    console.log(`\n🛡️  SolShield API running on http://localhost:${PORT}`);
+    console.log(`   Health: http://localhost:${PORT}/api/health`);
+    console.log(`   Analyze: POST http://localhost:${PORT}/api/analyze\n`);
+  });
+}
+
+export default app;
