@@ -1,0 +1,229 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>SolShield — Solana Wallet Security Scanner</title>
+  <meta name="description" content="Paste any Solana wallet address, token contract, or suspicious link and get an instant risk report with voice verdict and safe route alternatives." />
+  <meta name="keywords" content="Solana, wallet scanner, scam detector, blockchain security, DeFi safety" />
+  <meta property="og:title" content="SolShield — Solana Security Scanner" />
+  <meta property="og:description" content="Instant risk analysis for Solana wallets and tokens. Voice-powered verdicts with safe route alternatives." />
+  <meta property="og:type" content="website" />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet" />
+  <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🛡️</text></svg>" />
+  <link rel="stylesheet" href="/styles/main.css" />
+</head>
+<body>
+  <!-- Animated background -->
+  <div class="bg-grid"></div>
+  <div class="bg-glow bg-glow-1"></div>
+  <div class="bg-glow bg-glow-2"></div>
+  <div class="bg-glow bg-glow-3"></div>
+
+  <!-- Header -->
+  <header class="header">
+    <div class="header-inner">
+      <a href="/" class="logo">
+        <span class="logo-icon">🛡️</span>
+        <span class="logo-text">Sol<span class="logo-accent">Shield</span></span>
+      </a>
+      <nav class="nav">
+        <a href="#scanner" class="nav-link active">Scanner</a>
+        <a href="#how-it-works" class="nav-link">How It Works</a>
+        <a href="https://github.com" target="_blank" class="nav-link nav-link-github">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor"><path d="M12 0c-6.626 0-12 5.373-12 12 0 5.302 3.438 9.8 8.207 11.387.599.111.793-.261.793-.577v-2.234c-3.338.726-4.033-1.416-4.033-1.416-.546-1.387-1.333-1.756-1.333-1.756-1.089-.745.083-.729.083-.729 1.205.084 1.839 1.237 1.839 1.237 1.07 1.834 2.807 1.304 3.492.997.107-.775.418-1.305.762-1.604-2.665-.305-5.467-1.334-5.467-5.931 0-1.311.469-2.381 1.236-3.221-.124-.303-.535-1.524.117-3.176 0 0 1.008-.322 3.301 1.23.957-.266 1.983-.399 3.003-.404 1.02.005 2.047.138 3.006.404 2.291-1.552 3.297-1.23 3.297-1.23.653 1.653.242 2.874.118 3.176.77.84 1.235 1.911 1.235 3.221 0 4.609-2.807 5.624-5.479 5.921.43.372.823 1.102.823 2.222v3.293c0 .319.192.694.801.576 4.765-1.589 8.199-6.086 8.199-11.386 0-6.627-5.373-12-12-12z"/></svg>
+          GitHub
+        </a>
+      </nav>
+    </div>
+  </header>
+
+  <!-- Hero Section -->
+  <main>
+    <section class="hero" id="scanner">
+      <div class="hero-content">
+        <div class="hero-badge">
+          <span class="hero-badge-dot"></span>
+          Solana Security Scanner
+        </div>
+        <h1 class="hero-title">
+          Scan Any Solana Address<br/>
+          <span class="hero-title-gradient">Before You Transact</span>
+        </h1>
+        <p class="hero-subtitle">
+          Paste a wallet address, token contract, or suspicious link. Get an instant risk report 
+          with voice-powered verdict and safe route alternatives.
+        </p>
+
+        <!-- Scanner Input -->
+        <div class="scanner-container" id="scanner-container">
+          <div class="scanner-input-wrapper">
+            <div class="scanner-icon">
+              <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <circle cx="11" cy="11" r="8"></circle>
+                <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
+              </svg>
+            </div>
+            <input 
+              type="text" 
+              id="address-input" 
+              class="scanner-input" 
+              placeholder="Paste a Solana wallet address, token contract, or link..."
+              autocomplete="off"
+              spellcheck="false"
+            />
+            <button id="scan-btn" class="scan-btn" type="button">
+              <span class="scan-btn-text">Scan</span>
+              <span class="scan-btn-loading">
+                <svg class="spinner" width="20" height="20" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10" fill="none" stroke="currentColor" stroke-width="3" stroke-dasharray="30 70" stroke-linecap="round"/></svg>
+              </span>
+            </button>
+          </div>
+          <div class="scanner-hints">
+            <span class="hint-label">Try:</span>
+            <button class="hint-btn" data-address="vines1vzrYbzLMRdu58ou5XTby4qAqVRLmqo36NKPTg">Known Wallet</button>
+            <button class="hint-btn" data-address="ScamAd1111111111111111111111111111111111111">Demo Scam</button>
+            <button class="hint-btn" data-address="EPjFWdd5AufqSSqeM2qN1xzybapC8G4wEGGkZwyTDt1v">USDC Token</button>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Results Section (hidden initially) -->
+    <section class="results-section" id="results-section" style="display: none;">
+      <div class="results-container">
+        
+        <!-- Risk Score Header -->
+        <div class="risk-header" id="risk-header">
+          <div class="risk-score-ring" id="risk-score-ring">
+            <svg viewBox="0 0 120 120" class="score-svg">
+              <circle cx="60" cy="60" r="52" fill="none" stroke="rgba(255,255,255,0.08)" stroke-width="8"/>
+              <circle cx="60" cy="60" r="52" fill="none" stroke-width="8" stroke-linecap="round"
+                class="score-circle" id="score-circle"
+                stroke-dasharray="327" stroke-dashoffset="327"
+                transform="rotate(-90 60 60)"/>
+            </svg>
+            <div class="score-value" id="score-value">0</div>
+            <div class="score-label">Risk Score</div>
+          </div>
+          <div class="risk-info">
+            <div class="risk-level-badge" id="risk-level-badge">ANALYZING</div>
+            <h2 class="risk-address" id="risk-address">—</h2>
+            <p class="risk-verdict" id="risk-verdict">Analyzing address...</p>
+            <div class="risk-actions">
+              <button class="action-btn action-btn-voice" id="voice-btn" title="Listen to verdict">
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"></polygon><path d="M19.07 4.93a10 10 0 0 1 0 14.14M15.54 8.46a5 5 0 0 1 0 7.07"></path></svg>
+                <span>Play Verdict</span>
+              </button>
+              <button class="action-btn action-btn-report" id="report-btn" title="Report this address">
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 15s1-1 4-1 5 2 8 2 4-1 4-1V3s-1 1-4 1-5-2-8-2-4 1-4 1z"></path><line x1="4" y1="22" x2="4" y2="15"></line></svg>
+                <span>Report</span>
+              </button>
+            </div>
+          </div>
+        </div>
+
+        <!-- Risk Factors Grid -->
+        <div class="factors-section">
+          <h3 class="section-title">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"></path></svg>
+            Risk Breakdown
+          </h3>
+          <div class="factors-grid" id="factors-grid">
+            <!-- Populated dynamically -->
+          </div>
+        </div>
+
+        <!-- Blacklist Sources -->
+        <div class="sources-section">
+          <h3 class="section-title">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path><polyline points="14 2 14 8 20 8"></polyline><line x1="16" y1="13" x2="8" y2="13"></line><line x1="16" y1="17" x2="8" y2="17"></line></svg>
+            Source Checks
+          </h3>
+          <div class="sources-list" id="sources-list">
+            <!-- Populated dynamically -->
+          </div>
+        </div>
+
+        <!-- On-Chain Data -->
+        <div class="onchain-section" id="onchain-section" style="display: none;">
+          <h3 class="section-title">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="1" y="4" width="22" height="16" rx="2" ry="2"></rect><line x1="1" y1="10" x2="23" y2="10"></line></svg>
+            On-Chain Data
+          </h3>
+          <div class="onchain-grid" id="onchain-grid">
+            <!-- Populated dynamically -->
+          </div>
+        </div>
+
+        <!-- Safe Route Section (shown when risky) -->
+        <div class="safe-route-section" id="safe-route-section" style="display: none;">
+          <div class="safe-route-header">
+            <div class="safe-route-icon">🔀</div>
+            <div>
+              <h3 class="section-title" style="margin-bottom: 4px;">Safe Route Alternative</h3>
+              <p class="safe-route-desc">This address was flagged as risky. Use this safe bridge/swap route instead to protect your funds.</p>
+            </div>
+          </div>
+          <div class="lifi-widget-container" id="lifi-widget-container">
+            <div id="lifi-widget"></div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- How It Works Section -->
+    <section class="how-section" id="how-it-works">
+      <h2 class="how-title">How SolShield Works</h2>
+      <div class="how-grid">
+        <div class="how-card">
+          <div class="how-card-number">01</div>
+          <div class="how-card-icon">🔍</div>
+          <h3>Paste & Scan</h3>
+          <p>Enter any Solana wallet address, token contract, or suspicious link into the scanner.</p>
+        </div>
+        <div class="how-card">
+          <div class="how-card-number">02</div>
+          <div class="how-card-icon">⚡</div>
+          <h3>Instant Analysis</h3>
+          <p>We check against scam databases, analyze on-chain data, and evaluate wallet patterns in seconds.</p>
+        </div>
+        <div class="how-card">
+          <div class="how-card-number">03</div>
+          <div class="how-card-icon">🔊</div>
+          <h3>Voice Verdict</h3>
+          <p>Hear the risk assessment read aloud by AI. Know exactly why an address is risky — instantly.</p>
+        </div>
+        <div class="how-card">
+          <div class="how-card-number">04</div>
+          <div class="how-card-icon">🛡️</div>
+          <h3>Safe Route</h3>
+          <p>If flagged, we show a safe bridge/swap route via LI.FI so you never send funds to the wrong place.</p>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <!-- Footer -->
+  <footer class="footer">
+    <div class="footer-inner">
+      <div class="footer-brand">
+        <span class="logo-icon">🛡️</span> SolShield
+      </div>
+      <p class="footer-text">Built for the Solana hackathon. Protecting the ecosystem, one scan at a time.</p>
+      <div class="footer-links">
+        <a href="https://github.com" target="_blank">GitHub</a>
+        <a href="https://solana.com" target="_blank">Solana</a>
+        <a href="https://li.fi" target="_blank">LI.FI</a>
+      </div>
+    </div>
+  </footer>
+
+  <!-- Audio element for voice -->
+  <audio id="verdict-audio" style="display:none;"></audio>
+
+  <script type="module" src="/scripts/app.js"></script>
+</body>
+</html>

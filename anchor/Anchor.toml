@@ -1,0 +1,11 @@
+[workspace]
+members = [
+    "programs/solshield"
+]
+
+[provider]
+cluster = "devnet"
+wallet = "~/.config/solana/id.json"
+
+[programs.devnet]
+solshield = "DEPLOY_ADDRESS_HERE"
