@@ -355,6 +355,48 @@ body {
 .footer-links a { color: var(--text-secondary); text-decoration: none; font-size: 14px; transition: var(--transition); }
 .footer-links a:hover { color: var(--text-primary); }
 
+/* Safe Route Card */
+.safe-route-card {
+  padding: 24px; background: rgba(255,255,255,0.03);
+  border: 1px solid var(--border); border-radius: var(--radius-sm);
+  animation: fadeIn 0.4s ease-out;
+}
+.route-badge {
+  display: inline-block; padding: 4px 10px; background: rgba(0, 212, 255, 0.1);
+  color: var(--cyan); font-size: 10px; font-weight: 800; border-radius: 4px;
+  letter-spacing: 1px; margin-bottom: 16px; border: 1px solid rgba(0, 212, 255, 0.2);
+}
+.route-main { margin-bottom: 24px; }
+.route-step {
+  display: flex; align-items: center; justify-content: center; gap: 20px;
+  margin-bottom: 20px; padding: 16px; background: rgba(0,0,0,0.2); border-radius: 12px;
+}
+.route-token { display: flex; flex-direction: column; align-items: center; gap: 4px; }
+.token-icon { font-size: 24px; }
+.token-name { font-size: 13px; font-weight: 700; color: var(--text-primary); }
+.route-arrow { font-size: 20px; color: var(--text-muted); font-weight: 300; }
+
+.route-details {
+  display: grid; grid-template-columns: repeat(3, 1fr); gap: 12px;
+}
+.detail-item { text-align: center; }
+.detail-label { display: block; font-size: 11px; color: var(--text-muted); margin-bottom: 2px; text-transform: uppercase; }
+.detail-value { font-size: 14px; font-weight: 600; color: var(--text-secondary); }
+
+.execute-btn {
+  display: flex; align-items: center; justify-content: center; gap: 10px;
+  width: 100%; padding: 14px; background: var(--accent);
+  color: white; text-decoration: none; border-radius: var(--radius-sm);
+  font-weight: 700; font-size: 15px; transition: var(--transition);
+  box-shadow: 0 4px 12px var(--accent-glow);
+}
+.execute-btn:hover { transform: translateY(-2px); filter: brightness(1.1); box-shadow: 0 8px 24px var(--accent-glow); }
+
+.route-loading {
+  padding: 40px; text-align: center; display: flex; flex-direction: column; align-items: center;
+}
+@keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+
 /* ===== Responsive ===== */
 @media (max-width: 768px) {
   .header-inner { padding: 0 16px; }
@@ -364,4 +406,5 @@ body {
   .risk-actions { justify-content: center; }
   .results-section { padding: 16px 16px 60px; }
   .how-section { padding: 60px 16px; }
+  .route-details { grid-template-columns: 1fr; gap: 16px; }
 }

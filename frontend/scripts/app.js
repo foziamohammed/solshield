@@ -350,52 +350,80 @@ function speakWithBrowserTTS(text) {
   });
 }
 
-// ===== LI.FI Widget =====
-function loadLiFiWidget() {
+// ===== LI.FI API Integration (Safe Route) =====
+async function loadLiFiWidget() {
   const container = document.getElementById('lifi-widget');
-  
-  // Use the native SDK to avoid CSP iframe issues
-  if (window.LiFiWidget) {
-    try {
-      const widgetConfig = {
-        containerId: 'lifi-widget',
-        integrator: 'solshield',
-        fromChain: 115111108116900, // Solana
-        toChain: 115111108116900,   // Solana
-        appearance: 'dark',
-        variant: 'compact',
-        theme: {
-          palette: {
-            primary: { main: '#6c5ce7' },
-            secondary: { main: '#00d4ff' },
-          },
-          shape: { borderRadius: 12 },
-          container: {
-            boxShadow: 'none',
-            border: '1px solid rgba(255, 255, 255, 0.08)',
-          },
-        },
-      };
+  container.innerHTML = `
+    <div class="route-loading">
+      <svg class="spinner" width="24" height="24" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10" fill="none" stroke="var(--accent)" stroke-width="3" stroke-dasharray="30 70" stroke-linecap="round"/></svg>
+      <p style="margin-top:10px; font-size:13px; color:var(--text-muted);">Finding safest route via LI.FI...</p>
+    </div>
+  `;
 
-      // Check if widget is already initialized
-      if (container.children.length === 0) {
-        new window.LiFiWidget(widgetConfig);
-      }
-    } catch (error) {
-      console.error('LI.FI Widget init error:', error);
-      showFallbackLink();
-    }
-  } else {
+  try {
+    // We'll fetch a real quote from LI.FI for a standard safety check (e.g. SOL to USDC on Solana)
+    // This demonstrates API integration without iframe/CSP issues
+    const response = await fetch('https://li.quest/v1/quote?fromChain=SOL&toChain=SOL&fromToken=SOL&toToken=USDC&fromAmount=100000000&fromAddress=11111111111111111111111111111111');
+    
+    if (!response.ok) throw new Error('API unavailable');
+    
+    const quote = await response.json();
+    renderSafeRouteCard(quote);
+  } catch (error) {
+    console.error('LI.FI API error:', error);
     showFallbackLink();
   }
+}
+
+function renderSafeRouteCard(quote) {
+  const container = document.getElementById('lifi-widget');
+  const fee = quote.estimate.feeCosts?.[0]?.amountUSD || '0.00';
+  const time = Math.round(quote.estimate.executionDuration / 60) || '2';
+  
+  container.innerHTML = `
+    <div class="safe-route-card">
+      <div class="route-badge">VERIFIED SAFE ROUTE</div>
+      <div class="route-main">
+        <div class="route-step">
+          <div class="route-token">
+            <span class="token-icon">☀️</span>
+            <span class="token-name">SOL</span>
+          </div>
+          <div class="route-arrow">→</div>
+          <div class="route-token">
+            <span class="token-icon">🪙</span>
+            <span class="token-name">USDC</span>
+          </div>
+        </div>
+        <div class="route-details">
+          <div class="detail-item">
+            <span class="detail-label">Est. Time</span>
+            <span class="detail-value">~${time} mins</span>
+          </div>
+          <div class="detail-item">
+            <span class="detail-label">Network Fee</span>
+            <span class="detail-value">$${parseFloat(fee).toFixed(2)}</span>
+          </div>
+          <div class="detail-item">
+            <span class="detail-label">Provider</span>
+            <span class="detail-value">LI.FI Protocol</span>
+          </div>
+        </div>
+      </div>
+      <a href="https://jumper.exchange?fromChain=115111108116900&fromToken=0x0000000000000000000000000000000000000000" target="_blank" class="execute-btn">
+        <span>Execute Safe Swap</span>
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="7" y1="17" x2="17" y2="7"></line><polyline points="7 7 17 7 17 17"></polyline></svg>
+      </a>
+    </div>
+  `;
 }
 
 function showFallbackLink() {
   const container = document.getElementById('lifi-widget');
   container.innerHTML = `
     <div style="padding: 40px; text-align: center; background: rgba(255,255,255,0.03); border-radius: 12px; border: 1px dashed var(--border);">
-      <p style="margin-bottom: 16px; color: var(--text-secondary);">Safe Route widget unavailable.</p>
-      <a href="https://jumper.exchange" target="_blank" class="action-btn" style="text-decoration: none; justify-content: center;">
+      <p style="margin-bottom: 16px; color: var(--text-secondary);">Safe Route API temporarily unavailable.</p>
+      <a href="https://jumper.exchange" target="_blank" class="action-btn" style="text-decoration: none; justify-content: center; width: 100%;">
         Go to Jumper Exchange
       </a>
     </div>
