@@ -194,19 +194,20 @@ body {
   border-radius: var(--radius); margin-bottom: 24px;
   backdrop-filter: blur(12px);
 }
-.risk-score-ring { position: relative; width: 120px; height: 120px; flex-shrink: 0; }
-.score-svg { width: 100%; height: 100%; }
+.risk-score-ring { 
+  position: relative; width: 120px; height: 120px; flex-shrink: 0;
+  display: flex; flex-direction: column; align-items: center; justify-content: center;
+}
+.score-svg { position: absolute; inset: 0; width: 100%; height: 100%; }
 .score-circle { transition: stroke-dashoffset 1.5s cubic-bezier(0.4, 0, 0.2, 1), stroke 0.5s ease; }
 .score-value {
-  position: absolute; top: 50%; left: 50%;
-  transform: translate(-50%, -60%);
   font-size: 32px; font-weight: 800; letter-spacing: -1px;
+  line-height: 1; margin-top: -5px;
 }
 .score-label {
-  position: absolute; top: 50%; left: 50%;
-  transform: translate(-50%, 60%);
   font-size: 11px; color: var(--text-muted); text-transform: uppercase;
-  letter-spacing: 1px; font-weight: 600;
+  letter-spacing: 1px; font-weight: 600; line-height: 1;
+  margin-top: 2px;
 }
 .risk-info { flex: 1; min-width: 0; }
 .risk-level-badge {

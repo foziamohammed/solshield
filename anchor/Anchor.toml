@@ -8,4 +8,4 @@ cluster = "devnet"
 wallet = "~/.config/solana/id.json"
 
 [programs.devnet]
-solshield = "DEPLOY_ADDRESS_HERE"
+solshield = "So1Sh1e1dFLAGGEDwa11etPr0gramDevnetAddr111"

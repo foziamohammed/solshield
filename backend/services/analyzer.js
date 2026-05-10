@@ -37,15 +37,15 @@ export function analyzeAddress(address, onChainData, blacklistResult, onChainFla
 
   // === Blacklist Checks (highest weight) ===
   if (blacklistResult?.flagged) {
-    const weight = blacklistResult.riskLevel === 'critical' ? 40 : 25;
+    const weight = blacklistResult.riskLevel === 'critical' ? 60 : 45; // Increased from 40/25
     riskScore += weight;
     maxRisk = Math.max(maxRisk, weight);
     factors.push({
       category: 'Blacklist',
       label: 'Known Scam Database',
-      risk: blacklistResult.riskLevel === 'critical' ? 'critical' : 'high',
+      risk: 'critical',
       score: weight,
-      detail: `Address found in ${blacklistResult.sources.length} blacklist source(s): ${blacklistResult.sources.join(', ')}`,
+      detail: `URGENT: Address identified in security blacklists: ${blacklistResult.sources.join(', ')}`,
       icon: '🚫',
     });
   } else if (!domainResult) { // Only show address blacklist if it's not a domain
@@ -61,14 +61,14 @@ export function analyzeAddress(address, onChainData, blacklistResult, onChainFla
 
   // === On-Chain Program Flags ===
   if (onChainFlags?.flagged) {
-    riskScore += 30;
-    maxRisk = Math.max(maxRisk, 30);
+    riskScore += 50; // Increased from 30
+    maxRisk = Math.max(maxRisk, 50);
     factors.push({
       category: 'On-Chain Flags',
       label: 'Community Reports',
-      risk: 'high',
-      score: 30,
-      detail: 'This address has been flagged by the SolShield community on-chain',
+      risk: 'critical',
+      score: 50,
+      detail: 'PROBABLE SCAM: This address has been flagged on-chain by multiple community members',
       icon: '⛓️',
     });
   } else if (!domainResult) {
@@ -129,23 +129,23 @@ export function analyzeAddress(address, onChainData, blacklistResult, onChainFla
 
     // === Transaction Volume ===
     if (onChainData.transactionCount === 0) {
-      riskScore += 10;
+      riskScore += 20; // Increased from 10
+      factors.push({
+        category: 'Activity',
+        label: 'Transaction History',
+        risk: 'high',
+        score: 20,
+        detail: 'HIGH PARANOIA: Dormant Wallet detected — typical of fresh burner accounts used for malicious probes',
+        icon: '📊',
+      });
+    } else if (onChainData.transactionCount < 5) {
+      riskScore += 10; // Increased from 5
       factors.push({
         category: 'Activity',
         label: 'Transaction History',
         risk: 'medium',
         score: 10,
-        detail: 'No transaction history found — empty or dormant wallet',
-        icon: '📊',
-      });
-    } else if (onChainData.transactionCount < 5) {
-      riskScore += 5;
-      factors.push({
-        category: 'Activity',
-        label: 'Transaction History',
-        risk: 'low',
-        score: 5,
-        detail: `Only ${onChainData.transactionCount} transactions found — very low activity`,
+        detail: `Very low activity (${onChainData.transactionCount} txs) — suspicious for automated drainers`,
         icon: '📊',
       });
     } else {
@@ -223,9 +223,9 @@ export function analyzeAddress(address, onChainData, blacklistResult, onChainFla
 
   // Determine overall risk level
   let riskLevel;
-  if (riskScore >= 70) riskLevel = 'critical';
-  else if (riskScore >= 45) riskLevel = 'high';
-  else if (riskScore >= 25) riskLevel = 'medium';
+  if (riskScore >= 60) riskLevel = 'critical'; // Lowered from 70
+  else if (riskScore >= 40) riskLevel = 'high';     // Lowered from 45
+  else if (riskScore >= 20) riskLevel = 'medium';   // Lowered from 25
   else if (riskScore >= 10) riskLevel = 'low';
   else riskLevel = 'safe';
 
@@ -251,7 +251,8 @@ export function analyzeAddress(address, onChainData, blacklistResult, onChainFla
       : null,
     blacklistSources: blacklistResult?.details || [],
     timestamp: new Date().toISOString(),
-    showSafeRoute: riskLevel === 'critical' || riskLevel === 'high',
+    // PARANOIA: Show safe route for any risk above 10
+    showSafeRoute: riskScore > 10, 
   };
 }
 
